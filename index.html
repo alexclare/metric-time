@@ -2,17 +2,23 @@
   <head>
     <title>Metric Time</title>
     <style>
-      #frac { visible: false; }
-      #day { visible: false; }
+      #frac { display: none; }
+      #day { display: none; }
     </style>
     <script type="text/javascript" src="out/goog/base.js"></script>
     <script type="text/javascript" src="lib/processing-1.4.1.min.js"></script>
     <script type="text/javascript" src="out/metric-time.js"></script>
-    <script type="application/processing" data-processing-target="clock">goog.require('metric_time');</script>
+    <script type="text/javascript">goog.require('metric_time');</script>
   </head>
   <body>
     <canvas id="clock"></canvas>
     <div id="frac">day fraction</div>
     <div id="day">jdn</div>
+    <script type="text/javascript">
+      (function() {
+        p = new Processing(document.getElementById('clock'));
+        metric_time.go(200, 200);
+      })();
+    </script>
   </body>
 </html>
