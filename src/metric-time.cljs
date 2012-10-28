@@ -1,15 +1,19 @@
 (ns metric-time
-  (:require [goog.async.Delay :as delay]))
+  (:require [goog.Timer :as timer]
+            [goog.events :as events]))
+
+(def fps 60)
 
 (defn ^:export go [w h]
-  (let [n 1]
-    (js/p.size w h)
-    (js/p.background 255 255 255)
-    (draw 1)))
+  (js/p.size w h)
+  (js/p.background 255 255 255)
+  (events/listen
+   (doto (goog.Timer. (/ 1000 fps))
+     (. start)) goog.Timer/TICK draw))
 
-(defn draw [n]
+(def n 1)
+(defn draw []
   (js/p.fill 0 0 0)
   (js/p.stroke 255 255 255)
   (js/p.rect 0 0 js/p.width (* 20 n))
-  (doto (goog.async.Delay. #(draw (+ 1 n)) (* 1000 n))
-    (. start)))
+  (def n (+ 0.001 n)))
