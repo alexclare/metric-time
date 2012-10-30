@@ -23,7 +23,7 @@
 
 ;;; Convert polar angle (in radians) to rectangular unit vector
 (defn p-to-r [phi]
-  [(js/p.sin phi) (js/p.cos phi)])
+  [(js/p.cos phi) (js/p.sin phi)])
 
 ;;; Convert a float between 0 and 1 to an angle in radians
 (defn angle [frac]
@@ -48,11 +48,14 @@
 
   ; Notches (would look a bit cleaner if Ratio were supported in CLJS)
   (js/p.strokeWeight 1)
-  (dotimes [i 100]
-    (let [[x y] (p-to-r (angle (/ i 100)))
-          start (if (= 0 (mod i 10)) (/ 9 30) (/ 3))
-          end (/ 11 30)]
-      (process js/p.line [(* x start) (* y start)] [(* x end) (* y end)])))
+  (let [a (angle (/ 100))
+        end (/ 11 30)]
+    ; temporary until I finish the clock hands and get the angles straight
+    (js/p.rotate (/ 3.1415926535 2))
+    (dotimes [i 100]
+      (let [start (if (= 0 (mod i 10)) (/ 9 30) (/ 3))]
+        (process js/p.line [start 0]  [end 0])
+        (js/p.rotate a))))
   (js/p.popMatrix))
 
 (defn draw []
