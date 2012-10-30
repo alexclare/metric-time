@@ -13,18 +13,17 @@
                    (. start))
                  goog.Timer/TICK draw))
 
-;;; Scale output (from 0 to 1) to size of canvas
+;;; Scale normalized output to size of canvas
 (defn scaled [[x y]]
   [(* x js/p.width) (* y js/p.height)])
 
 ;;; Draw and scale a two-point processing function
-(defn process [fn pa pb]
-  (apply fn (concat (scaled pa) (scaled pb))))
+(defn process [fun pa pb]
+  (apply fun (concat (scaled pa) (scaled pb))))
 
-;;; Convert a float between 0 and 1 to an angle in radians
+;;; Scale a normalized float to an angle in radians
 (defn angle [frac]
-  (let [pi 3.1415926535]
-    (* frac pi 2)))
+  (* frac js/p.TWO_PI))
 
 ;; Can certainly make the cleanup more efficient by only clearing dirty areas
 (defn cleanup []
@@ -46,7 +45,7 @@
   (js/p.strokeWeight 1)
   (let [a (angle (/ 100))
         end (/ 11 30)]
-    (js/p.rotate (/ 3.1415926535 2))
+    (js/p.rotate js/p.HALF_PI)
     (dotimes [i 100]
       (let [start (if (= 0 (mod i 10)) (/ 9 30) (/ 3))]
         (process js/p.line [start 0]  [end 0])
@@ -56,7 +55,7 @@
 (defn clock-hands []
   (js/p.pushMatrix)
   (js/p.translate (/ js/p.width 2) (/ js/p.height 2))
-  (js/p.rotate (/ -3.1415926535 2))
+  (js/p.rotate (- js/p.HALF_PI))
   (let [now (js/Date.)
         day-frac (/ (+ (* 60 (+ (* 60 (. now getHours))
                                 (. now getMinutes)))
