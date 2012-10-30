@@ -25,6 +25,15 @@
 (defn angle [frac]
   (* frac js/p.TWO_PI))
 
+;;; Execute a function in a translated and rotated environment
+;;;   (better as a macro, but leave out for now due to CLJS)
+(defn transformed [fun]
+  (js/p.pushMatrix)
+  (js/p.translate (/ js/p.width 2) (/ js/p.height 2))
+  (js/p.rotate (- js/p.HALF_PI))
+  (fun)
+  (js/p.popMatrix))
+
 ;; Can certainly make the cleanup more efficient by only clearing dirty areas
 (defn cleanup []
   (apply js/p.fill background-color)
@@ -32,8 +41,6 @@
   (process js/p.rect [0 0] [1 1]))
 
 (defn clock-base []
-  (js/p.pushMatrix)
-  (js/p.translate (/ js/p.width 2) (/ js/p.height 2))
   (js/p.noFill)
   (apply js/p.stroke foreground-color)
 
@@ -45,17 +52,12 @@
   (js/p.strokeWeight 1)
   (let [a (angle (/ 100))
         end (/ 11 30)]
-    (js/p.rotate js/p.HALF_PI)
     (dotimes [i 100]
       (let [start (if (= 0 (mod i 10)) (/ 9 30) (/ 3))]
         (process js/p.line [start 0]  [end 0])
-        (js/p.rotate a))))
-  (js/p.popMatrix))
+        (js/p.rotate a)))))
 
 (defn clock-hands []
-  (js/p.pushMatrix)
-  (js/p.translate (/ js/p.width 2) (/ js/p.height 2))
-  (js/p.rotate (- js/p.HALF_PI))
   (let [now (js/Date.)
         day-frac (/ (+ (* 60 (+ (* 60 (. now getHours))
                                 (. now getMinutes)))
@@ -69,10 +71,9 @@
     (js/p.popMatrix)
     (js/p.strokeWeight 3)
     (js/p.rotate (angle day-frac))
-    (process js/p.line [0 0] [(/ 11 30) 0]))
-  (js/p.popMatrix))
+    (process js/p.line [0 0] [(/ 11 30) 0])))
 
 (defn draw []
   (cleanup)
-  (clock-base)
-  (clock-hands))
+  (transformed clock-base)
+  (transformed clock-hands))
