@@ -46,7 +46,6 @@
   (js/p.strokeWeight 1)
   (let [a (angle (/ 100))
         end (/ 11 30)]
-    ; temporary until I finish the clock hands and get the angles straight
     (js/p.rotate (/ 3.1415926535 2))
     (dotimes [i 100]
       (let [start (if (= 0 (mod i 10)) (/ 9 30) (/ 3))]
@@ -57,6 +56,7 @@
 (defn clock-hands []
   (js/p.pushMatrix)
   (js/p.translate (/ js/p.width 2) (/ js/p.height 2))
+  (js/p.rotate (/ -3.1415926535 2))
   (let [now (js/Date.)
         day-frac (/ (+ (* 60 (+ (* 60 (. now getHours))
                                 (. now getMinutes)))
