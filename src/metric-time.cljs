@@ -19,11 +19,7 @@
 
 ;;; Draw and scale a two-point processing function
 (defn process [fn pa pb]
-  (apply fn (concat (scaled pa) (scaled pb))))b
-
-;;; Convert polar angle (in radians) to rectangular unit vector
-(defn p-to-r [phi]
-  [(js/p.cos phi) (js/p.sin phi)])
+  (apply fn (concat (scaled pa) (scaled pb))))
 
 ;;; Convert a float between 0 and 1 to an angle in radians
 (defn angle [frac]
