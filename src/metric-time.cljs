@@ -58,12 +58,26 @@
         (js/p.rotate a))))
   (js/p.popMatrix))
 
-(defn draw []
+(defn clock-hands []
+  (js/p.pushMatrix)
+  (js/p.translate (/ js/p.width 2) (/ js/p.height 2))
   (let [now (js/Date.)
         day-frac (/ (+ (* 60 (+ (* 60 (. now getHours))
                                 (. now getMinutes)))
                        (. now getSeconds))
                     86400)
-        period-frac (rem day-frac 0.01)]
-    (cleanup)
-    (clock-base)))
+        period-frac (- (* 100 day-frac) (int (* 100 day-frac)))]
+    (js/p.pushMatrix)
+    (js/p.strokeWeight 2)
+    (js/p.rotate (angle period-frac))
+    (process js/p.line [0 0] [(/ 11 30) 0])
+    (js/p.popMatrix)
+    (js/p.strokeWeight 3)
+    (js/p.rotate (angle day-frac))
+    (process js/p.line [0 0] [(/ 11 30) 0]))
+  (js/p.popMatrix))
+
+(defn draw []
+  (cleanup)
+  (clock-base)
+  (clock-hands))
