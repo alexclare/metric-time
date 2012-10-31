@@ -1,15 +1,21 @@
-# Generic single-file ClojureScript makefile
+# Generic ClojureScript makefile
 
 target = metric-time
-srcdir = ./src
-prefix = ./out
+srcdir = src
+prefix = out
 
 CLJSC = $(CLOJURESCRIPT_HOME)/bin/cljsc
 
-all:	$(prefix)/$(target).js
+dev:	OPTS = :optimizations :simple :pretty-print true
+dev:	compile
 
-./out/$(target).js:	$(srcdir)/$(target).cljs
-	$(CLJSC) $(srcdir)/$(target).cljs > $(prefix)/$(target).js
+release:	OPTS = :optimizations :advanced
+release:	compile
+
+compile:	$(prefix)/$(target).js
+
+$(prefix)/$(target).js: $(srcdir)/*.cljs
+	$(CLJSC) $(srcdir) '{$(OPTS) :output-dir "$(@D)" :output-to "out/$(target).js"}'
 
 clean:
 	rm -r $(prefix)/*
