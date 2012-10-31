@@ -8,7 +8,6 @@
 
 (defn ^:export go [w h]
   (js/p.size w h)
-  #_(js/p.background background-color)
   (events/listen (doto (goog.Timer. (/ 1000 fps))
                    (. start))
                  goog.Timer/TICK draw))
