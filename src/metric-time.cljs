@@ -27,11 +27,11 @@
 
 ;;; Execute a function in a translated and rotated environment
 ;;;   (better as a macro, but leave out for now due to CLJS)
-(defn transformed [fun]
+(defn transformed [fun & args]
   (js/p.pushMatrix)
   (js/p.translate (/ js/p.width 2) (/ js/p.height 2))
   (js/p.rotate (- js/p.HALF_PI))
-  (fun)
+  (apply fun args)
   (js/p.popMatrix))
 
 ;; Can certainly make the cleanup more efficient by only clearing dirty areas
@@ -57,13 +57,8 @@
         (process js/p.line [start 0]  [end 0])
         (js/p.rotate a)))))
 
-(defn clock-hands []
-  (let [now (js/Date.)
-        day-frac (/ (+ (* 60 (+ (* 60 (. now getHours))
-                                (. now getMinutes)))
-                       (. now getSeconds))
-                    86400)
-        period-frac (- (* 100 day-frac) (int (* 100 day-frac)))]
+(defn clock-hands [day-frac]
+  (let [period-frac (- (* 100 day-frac) (int (* 100 day-frac)))]
     (js/p.pushMatrix)
     (js/p.strokeWeight 2)
     (js/p.rotate (angle period-frac))
@@ -74,6 +69,11 @@
     (process js/p.line [0 0] [(/ 11 30) 0])))
 
 (defn draw []
-  (cleanup)
-  (transformed clock-base)
-  (transformed clock-hands))
+  (let [now (js/Date.)
+        day-frac (/ (+ (* 60 (+ (* 60 (. now getHours))
+                                (. now getMinutes)))
+                       (. now getSeconds))
+                    86400)]
+    (cleanup)
+    (transformed clock-base)
+    (transformed clock-hands day-frac)))
