@@ -11,7 +11,9 @@
       #frac {
         top: 150px;
       }
-      #day { display: none; }
+      #day {
+        top: 300px;
+      }
     </style>
     <script type="text/javascript" src="out/goog/base.js"></script>
     <script type="text/javascript" src="lib/processing-1.4.1.min.js"></script>
@@ -21,7 +23,7 @@
   <body>
     <canvas id="clock"></canvas>
     <div id="frac"></div>
-    <div id="day">jdn</div>
+    <div id="day"></div>
     <script type="text/javascript">
       (function() {
         p = new Processing(document.getElementById('clock'));

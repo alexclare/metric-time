@@ -34,6 +34,9 @@
   (apply fun args)
   (js/p.popMatrix))
 
+(defn replace-html [id html]
+  (set! (. (js/document.getElementById id) -innerHTML) html))
+
 ;; Can certainly make the cleanup more efficient by only clearing dirty areas
 (defn cleanup []
   (apply js/p.fill background-color)
@@ -68,6 +71,9 @@
     (js/p.rotate (angle day-frac))
     (process js/p.line [0 0] [(/ 11 30) 0])))
 
+(defn jdn [ms]
+  (int (+ (/ ms 86400000) 2440587.5)))
+
 (defn draw []
   (let [now (js/Date.)
         day-frac (/ (+ (* 60 (+ (* 60 (. now getHours))
@@ -77,5 +83,5 @@
     (cleanup)
     (transformed clock-base)
     (transformed clock-hands day-frac)
-    (set! (. (js/document.getElementById "frac") -innerHTML)
-          (js/p.nf (* 100 day-frac) 2 3))))
+    (replace-html "frac" (js/p.nf (* 100 day-frac) 2 3))
+    (replace-html "day" (jdn (. now getTime)))))
