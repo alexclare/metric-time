@@ -2,7 +2,15 @@
   <head>
     <title>Metric Time</title>
     <style>
-      #frac { display: none; }
+      #frac, #day {
+        font-family: sans-serif;
+        font-size: 3em;
+        position: absolute;
+        left: 520px;
+      }
+      #frac {
+        top: 150px;
+      }
       #day { display: none; }
     </style>
     <script type="text/javascript" src="out/goog/base.js"></script>
@@ -12,12 +20,12 @@
   </head>
   <body>
     <canvas id="clock"></canvas>
-    <div id="frac">day fraction</div>
+    <div id="frac"></div>
     <div id="day">jdn</div>
     <script type="text/javascript">
       (function() {
         p = new Processing(document.getElementById('clock'));
-        metric_time.go(200, 200);
+        metric_time.go(500, 500);
       })();
     </script>
   </body>

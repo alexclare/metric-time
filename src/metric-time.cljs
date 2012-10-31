@@ -76,4 +76,6 @@
                     86400)]
     (cleanup)
     (transformed clock-base)
-    (transformed clock-hands day-frac)))
+    (transformed clock-hands day-frac)
+    (set! (. (js/document.getElementById "frac") -innerHTML)
+          (js/p.nf (* 100 day-frac) 2 3))))
