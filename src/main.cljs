@@ -8,7 +8,7 @@
 
 (defn ^:export go [w h]
   (js/p.size w h)
-  (js/p.background background-color)
+  #_(js/p.background background-color)
   (events/listen (doto (goog.Timer. (/ 1000 fps))
                    (. start))
                  goog.Timer/TICK draw))
@@ -21,12 +21,7 @@
 (defn process [fun pa pb]
   (apply fun (concat (scaled pa) (scaled pb))))
 
-;;; Scale a normalized float to an angle in radians
-(defn angle [frac]
-  (* frac js/p.TWO_PI))
-
 ;;; Execute a function in a translated and rotated environment
-;;;   (better as a macro, but leave out for now due to CLJS)
 (defn transformed [fun & args]
   (js/p.pushMatrix)
   (js/p.translate (/ js/p.width 2) (/ js/p.height 2))
@@ -53,7 +48,7 @@
 
   ; Notches (would look a bit cleaner if Ratio were supported in CLJS)
   (js/p.strokeWeight 1)
-  (let [a (angle (/ 100))
+  (let [a (/ js/p.TWO_PI 100)
         end (/ 11 30)]
     (dotimes [i 100]
       (let [start (if (= 0 (mod i 10)) (/ 9 30) (/ 3))]
@@ -64,18 +59,19 @@
   (let [period-frac (- (* 100 day-frac) (int (* 100 day-frac)))]
     (js/p.pushMatrix)
     (js/p.strokeWeight 2)
-    (js/p.rotate (angle period-frac))
+    (js/p.rotate (* period-frac js/p.TWO_PI))
     (process js/p.line [0 0] [(/ 11 30) 0])
-    (js/p.popMatrix)
-    (js/p.strokeWeight 3)
-    (js/p.rotate (angle day-frac))
-    (process js/p.line [0 0] [(/ 11 30) 0])))
+    (js/p.popMatrix))
+  (js/p.strokeWeight 3)
+  (js/p.rotate (* day-frac js/p.TWO_PI))
+  (process js/p.line [0 0] [(/ 11 30) 0]))
 
 (defn jdn [ms]
   (int (+ (/ ms 86400000) 2440587.5)))
 
 (defn draw []
   (let [now (js/Date.)
+        ;; Calculate day fraction manually to avoid time zone fiddling
         day-frac (/ (+ (* 60 (+ (* 60 (. now getHours))
                                 (. now getMinutes)))
                        (. now getSeconds))
