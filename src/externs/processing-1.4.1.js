@@ -1,4 +1,5 @@
 var Processing = {}
+Processing.HALF_PI
 Processing.TWO_PI
 Processing.height
 Processing.width
